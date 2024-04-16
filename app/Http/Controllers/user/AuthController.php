@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
     use imgTrait;
+
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['register', 'login', 'getImage']);
@@ -57,7 +58,6 @@ class AuthController extends Controller
 
         if ($request->hasFile('picture')) {
             $validated['picture'] = $this->uploadImage($request, 'users');
-
             if ($user->profile && $user->profile->picture) {
                 Storage::delete('public/images/users/' . $user->profile->picture);
             }
