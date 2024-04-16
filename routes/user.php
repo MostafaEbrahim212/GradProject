@@ -12,4 +12,5 @@ Route::group([], function () {
     Route::post('profile', [AuthController::class, 'CreateOrUpdateProfile']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('update-password', [AuthController::class, 'updatePassword']);
+    Route::get('img/{image}', [AuthController::class, 'getImage']);
 });

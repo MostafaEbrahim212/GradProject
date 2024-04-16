@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Traits\imgTrait;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
@@ -19,16 +20,16 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    use imgTrait;
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['register', 'login']);
+        $this->middleware('auth:sanctum')->except(['register', 'login', 'getImage']);
     }
     public function register(UserRegisterRequest $request)
     {
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
-        //make a token
         $token = $user->createToken('auth_token')->plainTextToken;
         return res_data(['token' => $token], 'User registered successfully', 201);
 
@@ -53,9 +54,15 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $user = Auth::user();
-        $imageName = Str::random(10) . '.' . $validated['picture']->getClientOriginalExtension();
-        Storage::disk('public')->put('images/users/' . $imageName, $validated['picture']->get());
-        $validated['picture'] = $imageName;
+
+        if ($request->hasFile('picture')) {
+            $validated['picture'] = $this->uploadImage($request, 'users');
+
+            if ($user->profile && $user->profile->picture) {
+                Storage::delete('public/images/users/' . $user->profile->picture);
+            }
+        }
+
         if ($user->profile) {
             $user->profile->update($validated);
         } else {
@@ -80,5 +87,10 @@ class AuthController extends Controller
         }
         $user->update(['password' => Hash::make($validated['password'])]);
         return res_data([], 'Password updated successfully', 200);
+    }
+
+    public function getImage($image)
+    {
+        return response()->file(storage_path('app/public/images/users/' . $image));
     }
 }
