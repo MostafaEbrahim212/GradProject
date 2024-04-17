@@ -22,10 +22,14 @@ class AuthController extends Controller
 {
     use imgTrait;
 
+
+
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['register', 'login', 'getImage']);
     }
+
+
     public function register(UserRegisterRequest $request)
     {
         $validated = $request->validated();
@@ -35,6 +39,8 @@ class AuthController extends Controller
         return res_data(['token' => $token], 'User registered successfully', 201);
 
     }
+
+
     public function login(UserLoginRequest $request)
     {
         $validated = $request->validated();
@@ -46,23 +52,24 @@ class AuthController extends Controller
         return res_data(['token' => $token], 'User logged in successfully', 200);
     }
 
+
     public function userInfo(Request $request)
     {
         $user = Auth::user();
         return res_data(new UserResource($user), 'User info', 200);
     }
+
+
     public function CreateOrUpdateProfile(UserProfileRequest $request)
     {
         $validated = $request->validated();
         $user = Auth::user();
-
         if ($request->hasFile('picture')) {
             $validated['picture'] = $this->uploadImage($request, 'users');
             if ($user->profile && $user->profile->picture) {
                 Storage::delete('public/images/users/' . $user->profile->picture);
             }
         }
-
         if ($user->profile) {
             $user->profile->update($validated);
         } else {
@@ -72,6 +79,8 @@ class AuthController extends Controller
             'user' => new UserResource($user)
         ], 'Profile created/updated successfully', 200);
     }
+
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
