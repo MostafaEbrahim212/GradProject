@@ -17,6 +17,8 @@ class AdminController extends Controller
     }
     public function login(LoginRequest $request)
     {
+
+
         $validated = $request->validated();
         $admin = Admin::where('email', $validated['email'])->first();
         if (!$admin || !Hash::check($validated['password'], $admin->password)) {
@@ -27,6 +29,9 @@ class AdminController extends Controller
     }
     public function info(Request $request)
     {
+
+
+
         $admin = Auth::guard('admins')->user();
         return res_data($admin, 'Admin info', 200);
     }
