@@ -13,4 +13,12 @@ Route::group([], function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('update-password', [AuthController::class, 'updatePassword']);
     Route::get('img/{image}', [AuthController::class, 'getImage']);
+    Route::get('token', [AuthController::class, 'refreshAccessToken']);
+});
+
+
+
+
+route::fallback(function () {
+    return res_data('Nothing Found!!', 'Invalid Request', 404);
 });

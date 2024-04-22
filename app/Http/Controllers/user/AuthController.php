@@ -4,19 +4,21 @@ namespace App\Http\Controllers\user;
 
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\UserProfileRequest;
+use App\Http\Requests\userRequests\UpdatePasswordRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\userRequests\UserProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Traits\imgTrait;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\userRequests\UserRegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -41,7 +43,7 @@ class AuthController extends Controller
     }
 
 
-    public function login(UserLoginRequest $request)
+    public function login(LoginRequest $request)
     {
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])->first();
@@ -101,5 +103,14 @@ class AuthController extends Controller
     public function getImage($image)
     {
         return response()->file(storage_path('app/public/images/users/' . $image));
+    }
+    public function refreshAccessToken()
+    {
+        $user = Auth::user();
+        $user->tokens()->delete();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return res_data([
+            'token' => $token
+        ], 'refresh Token Successfuly');
     }
 }

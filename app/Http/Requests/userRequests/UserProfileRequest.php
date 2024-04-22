@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\userRequests;
+
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Validation\Validator;
 
 class UserProfileRequest extends FormRequest
 {
@@ -22,9 +26,8 @@ class UserProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'sometimes|required|string|max:255',
-
-            'last_name' => 'sometimes|required|string|max:255',
+            'first_name' => 'sometimes|required|string|max:255|min:3',
+            'last_name' => 'sometimes|required|string|max:255|min:3',
             'mobile' => 'sometimes|required|string|max:255|unique:profiles,mobile,' . auth()->id(),
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'city' => 'sometimes|required|string|max:255',
