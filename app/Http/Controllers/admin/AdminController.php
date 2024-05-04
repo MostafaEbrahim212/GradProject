@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\ChairtyResource;
 use App\Models\Admin;
 use App\Models\Chairty_Request;
 use App\Models\User;
@@ -41,12 +42,18 @@ class AdminController extends Controller
     public function users(Request $request)
     {
         $users = User::with('profile', 'chairites_permessions')->get();
+        if (!$users) {
+            return res_data([], 'No users found', 404);
+        }
         return res_data($users, 'Users list', 200);
     }
 
     public function user(Request $request, $id)
     {
         $user = User::with('profile', 'chairites_permessions')->find($id);
+        if (!$user) {
+            return res_data([], 'User not found', 404);
+        }
         return res_data($user, 'User info', 200);
     }
     public function toggle_active(Request $request, $id)
@@ -59,6 +66,9 @@ class AdminController extends Controller
     public function requests(Request $request)
     {
         $requests = Chairty_Request::with('user')->get();
+        if (!$requests) {
+            return res_data([], 'No requests found', 404);
+        }
         return res_data($requests, 'Requests list', 200);
     }
     public function accept_request(Request $request, $id)
@@ -95,5 +105,24 @@ class AdminController extends Controller
         // delete the request
         Chairty_Request::where('user_id', $id)->delete();
         return res_data($user, 'User rejected as charity', 200);
+    }
+    public function chairites(Request $request)
+    {
+        $users = User::where('is_chairty', true)->withOnly('chairty_info')->get();
+        $chairties_infos = $users->map(function ($user) {
+            return $user->chairty_info;
+        });
+        if (!$chairties_infos) {
+            return res_data([], 'No chairties found', 404);
+        }
+        return res_data(ChairtyResource::collection($chairties_infos), 'Charities list', 200);
+    }
+    public function chairty(Request $request, $id)
+    {
+        $chairty = User::where('is_chairty', true)->withOnly('chairty_info')->find($id);
+        if (!$chairty) {
+            return res_data([], 'Charity not found', 404);
+        }
+        return res_data(new ChairtyResource($chairty->chairty_info), 'Charity info', 200);
     }
 }

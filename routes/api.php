@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-require __DIR__ . '/user.php';
-require __DIR__ . '/admin.php';
+require __DIR__ . '/CustomRoute/user.php';
+require __DIR__ . '/CustomRoute/admin.php';
+require __DIR__ . '/CustomRoute/chairty.php';
