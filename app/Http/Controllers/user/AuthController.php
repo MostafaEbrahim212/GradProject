@@ -4,6 +4,7 @@ namespace App\Http\Controllers\user;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Chairty_Request;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\userRequests\UpdatePasswordRequest;
 use App\Http\Requests\LoginRequest;
@@ -112,5 +113,19 @@ class AuthController extends Controller
         return res_data([
             'token' => $token
         ], 'refresh Token Successfuly');
+    }
+
+    public function request_charity(Chairty_Request $request)
+    {
+        $user = Auth::user();
+        $validated = $request->validated();
+        if ($user->request_be_chairty == 1) {
+            return res_data([], 'You already sent a request', 400);
+        }
+        $user->chairty_request()->createOrFirst($validated);
+        $user->request_be_chairty = 1;
+        $user->request_status = 'pending';
+        $user->save();
+        return res_data([$validated], 'Request sent successfully', 200);
     }
 }

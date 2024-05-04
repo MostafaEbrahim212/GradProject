@@ -14,6 +14,8 @@ Route::group([], function () {
     Route::post('update-password', [AuthController::class, 'updatePassword']);
     Route::get('img/{image}', [AuthController::class, 'getImage']);
     Route::get('token', [AuthController::class, 'refreshAccessToken']);
+    // request_to_be_chairty
+    Route::post('request_to_be_chairty', [AuthController::class, 'request_charity']);
 });
 
 

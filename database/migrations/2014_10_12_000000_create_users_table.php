@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('request_be_chairty')->default(false);
+            $table->enum('request_status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_chairty')->default(false);
             $table->boolean('has_recommendation')->default(false);

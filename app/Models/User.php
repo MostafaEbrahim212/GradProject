@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'request_be_chairty',
+        'request_status',
+        'is_active',
+        'is_chairty',
+        'has_recommendation',
     ];
 
     /**
@@ -45,5 +50,17 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(Profile::class);
+    }
+    public function chairty_request()
+    {
+        return $this->hasOne(Chairty_Request::class);
+    }
+    public function chairites_permessions()
+    {
+        return $this->hasOne(chairites_permessions::class);
+    }
+    public function chairty_info()
+    {
+        return $this->hasOne(Chairty_Info::class);
     }
 }

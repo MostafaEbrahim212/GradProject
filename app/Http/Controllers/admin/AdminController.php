@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\Admin;
+use App\Models\Chairty_Request;
+use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,5 +31,69 @@ class AdminController extends Controller
     {
         $admin = Auth::guard('admins')->user();
         return res_data($admin, 'Admin info', 200);
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return res_data([], 'Logged out successfully', 200);
+    }
+
+    public function users(Request $request)
+    {
+        $users = User::with('profile', 'chairites_permessions')->get();
+        return res_data($users, 'Users list', 200);
+    }
+
+    public function user(Request $request, $id)
+    {
+        $user = User::with('profile', 'chairites_permessions')->find($id);
+        return res_data($user, 'User info', 200);
+    }
+    public function toggle_active(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->is_active = !$user->is_active;
+        $user->save();
+        return res_data($user, 'User active status updated', 200);
+    }
+    public function requests(Request $request)
+    {
+        $requests = Chairty_Request::with('user')->get();
+        return res_data($requests, 'Requests list', 200);
+    }
+    public function accept_request(Request $request, $id)
+    {
+
+        $user = User::find($id);
+        $user->is_chairty = true;
+        $user->request_status = 'accepted';
+        $user->chairites_permessions()->create([
+            'user_id' => $user->id,
+            'can_create' => true,
+            'can_read' => true,
+            'can_update' => true,
+            'can_delete' => true,
+        ]);
+        $user->save();
+        // delete the request
+        $user->chairty_info()->create([
+            'name' => $user->chairty_request->chairty_name,
+            'address' => $user->chairty_request->chairty_address,
+            'chairty_type' => $user->chairty_request->chairty_type,
+            'financial_license' => $user->chairty_request->financial_license,
+            'ad_number' => $user->chairty_request->ad_number,
+        ]);
+        Chairty_Request::where('user_id', $id)->delete();
+        return res_data($user, 'User accepted as charity', 200);
+    }
+    public function reject_request(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->is_chairty = false;
+        $user->request_status = 'rejected';
+        $user->save();
+        // delete the request
+        Chairty_Request::where('user_id', $id)->delete();
+        return res_data($user, 'User rejected as charity', 200);
     }
 }
