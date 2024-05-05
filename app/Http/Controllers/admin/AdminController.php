@@ -7,6 +7,8 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\ChairtyResource;
 use App\Models\Admin;
 use App\Models\Chairty_Request;
+use App\Models\Fundraisers;
+use App\Models\FundraisersCategories;
 use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
@@ -124,5 +126,21 @@ class AdminController extends Controller
             return res_data([], 'Charity not found', 404);
         }
         return res_data(new ChairtyResource($chairty->chairty_info), 'Charity info', 200);
+    }
+    public function fundraisers_categories(Request $request)
+    {
+        $categories = FundraisersCategories::with('children')->whereNull('parent_id')->get();
+        if (!$categories) {
+            return res_data([], 'No categories found', 404);
+        }
+        return res_data($categories, 'Fundraisers categories list', 200);
+    }
+    public function fundraisers(Request $request)
+    {
+        $fundraisers = Fundraisers::get();
+        if (!$fundraisers) {
+            return res_data([], 'No fundraisers found', 404);
+        }
+        return res_data($fundraisers, 'Fundraisers list', 200);
     }
 }
