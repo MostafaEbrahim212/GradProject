@@ -31,6 +31,7 @@ class Chairty_Request extends FormRequest
             'chairty_address' => 'required|string',
             'chairty_type' => 'required|string|in:medical,educational,social,environmental,humanitarian,cultural,sports,economic,other',
             'financial_license' => 'required|string',
+            'financial_license_image' => 'required|string',
             'ad_number' => 'required|string',
         ];
     }

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->longText('description')->nullable();
             $table->string('chairty_type');
             $table->string('financial_license');
+            $table->string('financial_license_image');
             $table->string('ad_number');
             $table->timestamps();
         });

@@ -15,6 +15,7 @@ class Chairty_Info extends Model
         'description',
         'chairty_type',
         'financial_license',
+        'financial_license_image',
         'ad_number',
     ];
     use HasFactory;

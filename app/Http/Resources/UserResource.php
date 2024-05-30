@@ -28,19 +28,21 @@ class UserResource extends JsonResource
             'request_status' => $this->request_status,
             'is_chairty' => $this->is_chairty,
             'permessions' => [
-                'can_create' => $this->chairites_permessions->can_create,
-                'can_read' => $this->chairites_permessions->can_read,
-                'can_update' => $this->chairites_permessions->can_update,
-                'can_delete' => $this->chairites_permessions->can_delete,
+                'can_create' => $this->chairites_permessions->can_create ?? null,
+                'can_read' => $this->chairites_permessions->can_read ?? null,
+                'can_update' => $this->chairites_permessions->can_update ?? null,
+                'can_delete' => $this->chairites_permessions->can_delete ?? null,
             ],
             'chairty_info' => [
-                'name' => $this->chairty_info->name,
-                'address' => $this->chairty_info->address,
-                'picture' => $this->chairty_info->picture,
-                'description' => $this->chairty_info->description,
-                'chairty_type' => $this->chairty_info->chairty_type,
-                'financial_license' => $this->chairty_info->financial_license,
-                'ad_number' => $this->chairty_info->ad_number,
+                'name' => $this->chairty_info->name ?? null,
+                'address' => $this->chairty_info->address ?? null,
+                'picture' => $this->chairty_info->picture ?? null,
+                'description' => $this->chairty_info->description ?? null,
+                'chairty_type' => $this->chairty_info->chairty_type ?? null,
+                'financial_license' => $this->chairty_info->financial_license ?? null,
+                'financial_license_image' => $this->chairty_info->financial_license_image ?? null,
+                'ad_number' => $this->chairty_info->ad_number ?? null,
+
             ]
         ];
     }

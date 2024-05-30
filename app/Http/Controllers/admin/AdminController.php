@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FundraiserCategoryRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\ChairtyResource;
 use App\Models\Admin;
@@ -75,7 +76,6 @@ class AdminController extends Controller
     }
     public function accept_request(Request $request, $id)
     {
-
         $user = User::find($id);
         $user->is_chairty = true;
         $user->request_status = 'accepted';
@@ -93,6 +93,7 @@ class AdminController extends Controller
             'address' => $user->chairty_request->chairty_address,
             'chairty_type' => $user->chairty_request->chairty_type,
             'financial_license' => $user->chairty_request->financial_license,
+            'financial_license_image' => $user->chairty_request->financial_license_image,
             'ad_number' => $user->chairty_request->ad_number,
         ]);
         Chairty_Request::where('user_id', $id)->delete();
@@ -127,9 +128,26 @@ class AdminController extends Controller
         }
         return res_data(new ChairtyResource($chairty->chairty_info), 'Charity info', 200);
     }
+    public function add_fundraiser_category(FundraiserCategoryRequest $request)
+    {
+        $validated = $request->validated();
+        $slug = strtolower(str_replace(' ', '-', $validated['name']));
+        $validated['slug'] = $slug;
+        $category = FundraisersCategories::create($validated);
+        return res_data($category, 'Category added successfully', 200);
+    }
+    public function update_fundraiser_category(FundraiserCategoryRequest $request, $id)
+    {
+        $validated = $request->validated();
+        $slug = strtolower(str_replace(' ', '-', $validated['name']));
+        $validated['slug'] = $slug;
+        $category = FundraisersCategories::find($id);
+        $category->update($validated);
+        return res_data($category, 'Category updated successfully', 200);
+    }
     public function fundraisers_categories(Request $request)
     {
-        $categories = FundraisersCategories::with('children')->whereNull('parent_id')->get();
+        $categories = FundraisersCategories::with('children')->get();
         if (!$categories) {
             return res_data([], 'No categories found', 404);
         }

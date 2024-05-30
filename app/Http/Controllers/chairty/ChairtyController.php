@@ -47,6 +47,9 @@ class ChairtyController extends Controller
     public function fundraisers(Request $request)
     {
         $fundraisers = Fundraisers::where('user_id', Auth::id())->get();
+        if ($fundraisers->isEmpty()) {
+            return res_data([], 'No fundraisers found', 404);
+        }
         return res_data($fundraisers, 'Fundraisers list', 200);
     }
     public function update_fundraiser(Request $request, $id)

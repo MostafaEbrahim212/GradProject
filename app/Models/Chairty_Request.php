@@ -18,6 +18,7 @@ class Chairty_Request extends Model
         'chairty_address',
         'chairty_type',
         'financial_license',
+        'financial_license_image',
         'ad_number',
     ];
     use HasFactory;

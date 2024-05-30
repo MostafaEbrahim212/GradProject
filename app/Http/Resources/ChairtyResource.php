@@ -24,6 +24,7 @@ class ChairtyResource extends JsonResource
             'chairty_type' => $this->chairty_type,
             'description' => $this->description,
             'financial_license' => $this->financial_license,
+            'financial_license_image' => $this->financial_license_image,
             'ad_number' => $this->ad_number,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,

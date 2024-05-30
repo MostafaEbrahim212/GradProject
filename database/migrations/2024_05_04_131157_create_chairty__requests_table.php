@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->string('chairty_address');
             $table->enum('chairty_type', ['medical', 'educational', 'social', 'environmental', 'humanitarian', 'cultural', 'sports', 'economic', 'other']);
             $table->string('financial_license');
+            $table->string('financial_license_image');
+            // financial_license_image
             $table->string('ad_number');
             $table->timestamps();
         });

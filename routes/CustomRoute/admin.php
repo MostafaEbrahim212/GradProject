@@ -16,8 +16,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reject_request/{id}', [AdminController::class, 'reject_request']);
     Route::get('chairites', [AdminController::class, 'chairites']);
     Route::get('chairty/{id}', [AdminController::class, 'chairty']);
-    // get_all_fundraisers_categories
+    Route::post('add_fundraiser_category', [AdminController::class, 'add_fundraiser_category']);
+    Route::post('update_fundraiser_category/{id}', [AdminController::class, 'update_fundraiser_category']);
     Route::get('fundraisers_categories', [AdminController::class, 'fundraisers_categories']);
-    // get_all_fundraisers
     Route::get('fundraisers', [AdminController::class, 'fundraisers']);
 });
