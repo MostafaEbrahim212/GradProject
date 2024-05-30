@@ -128,4 +128,23 @@ class AuthController extends Controller
         $user->save();
         return res_data([$validated], 'Request sent successfully', 200);
     }
+
+
+
+    public function sayhi(Request $request)
+    {
+        $user = Auth::user();
+        $validated = $request->validate([
+            'message' => 'required|string'
+        ]);
+        if ($validated['message'] == 'hi') {
+            $user->has_recommendation = 1;
+            $user->save();
+            return res_data('', 'you said hi thank you ', 200);
+        } else {
+            return response()->json(['message' => "wrong message you should say hi not {$validated['message']}"], 403);
+        }
+    }
 }
+
+
