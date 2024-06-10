@@ -63,4 +63,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Chairty_Info::class);
     }
+    public function recomendation()
+    {
+        return $this->hasOne(recommendation_table::class);
+    }
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

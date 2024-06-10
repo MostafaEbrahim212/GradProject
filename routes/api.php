@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/CustomRoute/user.php';
 require __DIR__ . '/CustomRoute/admin.php';
 require __DIR__ . '/CustomRoute/chairty.php';
+require __DIR__ . '/CustomRoute/recomendation_system.php';

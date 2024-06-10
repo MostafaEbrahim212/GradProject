@@ -25,6 +25,7 @@ class UserResource extends JsonResource
                 'address' => $this->profile->address ?? null,
                 'city' => $this->profile->city ?? null,
             ],
+            'has_recommendation' => $this->has_recommendation,
             'request_status' => $this->request_status,
             'is_chairty' => $this->is_chairty,
             'permessions' => [

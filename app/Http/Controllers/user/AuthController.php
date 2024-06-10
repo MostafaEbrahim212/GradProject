@@ -131,19 +131,24 @@ class AuthController extends Controller
 
 
 
-    public function sayhi(Request $request)
+    public function recommendation(Request $request)
     {
         $user = Auth::user();
         $validated = $request->validate([
-            'message' => 'required|string'
+            'age' => 'required|integer',
+            'education_level' => 'required|in:bachelor,master,phd',
+            'previous_donation_type' => 'required|in:food,books,electronics,clothes',
+            'previous_volunteeer' => 'required|boolean',
+            'personal_interests' => 'required|in:sports,health,education,agriculture,environment',
+            'profession' => 'required|in:engineer,doctor,teacher,lawyer,scientist,artist',
         ]);
-        if ($validated['message'] == 'hi') {
-            $user->has_recommendation = 1;
-            $user->save();
-            return res_data('', 'you said hi thank you ', 200);
-        } else {
-            return response()->json(['message' => "wrong message you should say hi not {$validated['message']}"], 403);
+        if ($user->has_recommendation == 1) {
+            return res_data([], 'You already sent a recommendation', 400);
         }
+        $user->has_recommendation = 1;
+        $user->recomendation()->create($validated);
+        $user->save();
+        return res_data([$validated], 'Recommendation sent successfully', 200);
     }
 }
 
