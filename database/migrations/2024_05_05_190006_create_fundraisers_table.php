@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('account_number');
             $table->boolean('is_active')->default(true);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('fundraisers_categories')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('fundraisers_categories')->onDelete('cascade')->nullable();
             $table->timestamps();
         });
     }

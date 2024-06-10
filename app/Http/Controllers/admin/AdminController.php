@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\Chairty_Request;
 use App\Models\Fundraisers;
 use App\Models\FundraisersCategories;
+use App\Models\Transaction;
 use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
@@ -161,4 +162,15 @@ class AdminController extends Controller
         }
         return res_data($fundraisers, 'Fundraisers list', 200);
     }
+
+
+    public function transactions(Request $request)
+    {
+        $transactions = Transaction::get();
+        if (!$transactions) {
+            return res_data([], 'No transactions found', 404);
+        }
+        return res_data($transactions, 'Transactions list', 200);
+    }
 }
+

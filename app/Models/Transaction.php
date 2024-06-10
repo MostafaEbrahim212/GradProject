@@ -10,8 +10,8 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'fundraiser_id',
+        'transaction_id',
         'amount',
-        'type',
         'status',
         'description',
     ];

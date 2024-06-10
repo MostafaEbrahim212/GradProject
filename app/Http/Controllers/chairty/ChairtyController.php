@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChairtyProfileRequest;
 use App\Http\Resources\ChairtyResource;
 use App\Models\Fundraisers;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -81,4 +82,24 @@ class ChairtyController extends Controller
         $fundraiser->delete();
         return res_data([], 'Fundraiser deleted', 200);
     }
+
+
+
+
+
+
+
+
+    public function transactions(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->is_chairty != 1) {
+            return res_data('error', 'You are not allowed to access this resource', 403);
+        }
+        $fundraiserIds = Fundraisers::where('user_id', $user->id)->pluck('id');
+        $transactions = Transaction::whereIn('fundraiser_id', $fundraiserIds)->get();
+        return res_data($transactions, 'Transactions related to your fundraisers', 200);
+    }
+
+
 }
