@@ -16,7 +16,7 @@ class ChairtyController extends Controller
     {
         $this->middleware('auth:sanctum')->except('login');
     }
-    public function profile(Request $request)
+    public function Profile(Request $request)
     {
         $chairty = Auth::user()->chairty_info;
         return res_data(new ChairtyResource($chairty), 'Chairty info', 200);
@@ -82,13 +82,6 @@ class ChairtyController extends Controller
         $fundraiser->delete();
         return res_data([], 'Fundraiser deleted', 200);
     }
-
-
-
-
-
-
-
 
     public function transactions(Request $request)
     {

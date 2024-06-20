@@ -15,6 +15,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('recommendation', [AuthController::class, 'recommendation'])->name('user.recommendation');
     Route::post('donate', [donateController::class, 'stripePost'])->name('donate');
     Route::get('transactions', [donateController::class, 'transactions'])->name('transactions');
+
+
+    Route::get('charities', [AuthController::class, 'charities'])->name('charities');
+    Route::get('charities/{id}', [AuthController::class, 'charity'])->name('charity');
 });
 
 Route::post('register', [AuthController::class, 'register'])->name('register');

@@ -9,6 +9,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\userRequests\UpdatePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\userRequests\UserProfileRequest;
+use App\Http\Resources\ChairtyResource;
 use App\Http\Resources\UserResource;
 use App\Traits\imgTrait;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['register', 'login', 'getImage']);
+        $this->middleware('auth:sanctum')->except(['register', 'login']);
     }
 
 
@@ -149,6 +150,41 @@ class AuthController extends Controller
         $user->recomendation()->create($validated);
         $user->save();
         return res_data([$validated], 'Recommendation sent successfully', 200);
+    }
+
+
+    public function charities()
+    {
+        // Fetch the user and ensure they are authenticated
+        $user = Auth::user();
+
+        // Fetch charities with their charity info and fundraisers
+        $charities = User::where('is_chairty', 1)
+            ->with(['chairty_info', 'fundraisers'])
+            ->get();
+
+        // Map the charities to the desired format
+        $charities_infos = $charities->map(function ($charity) {
+            return [
+                'charity_info' => new ChairtyResource($charity->chairty_info),
+                'fundraisers' => $charity->fundraisers,
+            ];
+        });
+
+        // Return the formatted data with a success response
+        return res_data($charities_infos, 'All charities', 200);
+    }
+
+    public function charity($id)
+    {
+        $chairty = User::where('is_chairty', 1)->with('chairty_info', 'fundraisers')->find($id);
+        if (!$chairty) {
+            return res_data([], 'Chairty not found', 404);
+        }
+        return res_data([
+            new ChairtyResource($chairty->chairty_info),
+            'fundraisers' => $chairty->fundraisers
+        ], 'Chairty info', 200);
     }
 }
 

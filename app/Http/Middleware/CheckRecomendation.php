@@ -21,7 +21,7 @@ class CheckRecomendation
             if ($user->has_recommendation === 1) {
                 return $next($request);
             }
-            if (in_array($request->route()->getName(), ['recommendation', 'login', 'register', 'logout'])) {
+            if (in_array($request->route()->getName(), ['user.recommendation', 'login', 'register', 'logout'])) {
                 return $next($request);
             } else {
                 return response()->json(['message' => 'You are not allowed to access this route until recommend'], 401);

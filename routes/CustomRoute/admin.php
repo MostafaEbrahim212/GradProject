@@ -13,8 +13,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get('requests', [AdminController::class, 'requests'])->name('admin.requests');
     Route::get('requests/{id}', [AdminController::class, 'request'])->name('admin.request');
-    Route::post('requests/accept/{id}', [AdminController::class, 'acceptRequest'])->name('admin.acceptRequest');
-    Route::post('requests/reject/{id}', [AdminController::class, 'rejectRequest'])->name('admin.rejectRequest');
+    Route::post('requests/accept/{id}', [AdminController::class, 'accept_request'])->name('admin.acceptRequest');
+    Route::post('requests/reject/{id}', [AdminController::class, 'reject_request'])->name('admin.rejectRequest');
 
     Route::get('charities', [AdminController::class, 'charities'])->name('admin.charities');
     Route::get('charities/{id}', [AdminController::class, 'charity'])->name('admin.charity');
