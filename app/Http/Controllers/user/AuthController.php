@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\user;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chairty_Request;
 use App\Http\Requests\UserLoginRequest;
@@ -25,9 +24,6 @@ use Throwable;
 class AuthController extends Controller
 {
     use imgTrait;
-
-
-
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['register', 'login']);
@@ -41,7 +37,6 @@ class AuthController extends Controller
         $user = User::create($validated);
         $token = $user->createToken('auth_token')->plainTextToken;
         return res_data(['token' => $token], 'User registered successfully', 201);
-
     }
 
 
@@ -101,7 +96,6 @@ class AuthController extends Controller
         $user->update(['password' => Hash::make($validated['password'])]);
         return res_data([], 'Password updated successfully', 200);
     }
-
     public function getImage($image)
     {
         return response()->file(storage_path('app/public/images/users/' . $image));
@@ -115,7 +109,6 @@ class AuthController extends Controller
             'token' => $token
         ], 'refresh Token Successfuly');
     }
-
     public function request_charity(Chairty_Request $request)
     {
         $user = Auth::user();
@@ -129,9 +122,6 @@ class AuthController extends Controller
         $user->save();
         return res_data([$validated], 'Request sent successfully', 200);
     }
-
-
-
     public function recommendation(Request $request)
     {
         $user = Auth::user();
@@ -151,27 +141,18 @@ class AuthController extends Controller
         $user->save();
         return res_data([$validated], 'Recommendation sent successfully', 200);
     }
-
-
     public function charities()
     {
-        // Fetch the user and ensure they are authenticated
         $user = Auth::user();
-
-        // Fetch charities with their charity info and fundraisers
         $charities = User::where('is_chairty', 1)
             ->with(['chairty_info', 'fundraisers'])
             ->get();
-
-        // Map the charities to the desired format
         $charities_infos = $charities->map(function ($charity) {
             return [
                 'charity_info' => new ChairtyResource($charity->chairty_info),
                 'fundraisers' => $charity->fundraisers,
             ];
         });
-
-        // Return the formatted data with a success response
         return res_data($charities_infos, 'All charities', 200);
     }
 
