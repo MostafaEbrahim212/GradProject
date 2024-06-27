@@ -10,20 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('chairty__requests', function (Blueprint $table) {
+        Schema::create('charity__infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('email');
-            $table->string('phone');
             $table->string('address');
-            $table->string('job');
-            $table->string('chairty_name');
-            $table->string('chairty_address');
-            $table->enum('chairty_type', ['medical', 'educational', 'social', 'environmental', 'humanitarian', 'cultural', 'sports', 'economic', 'other']);
+            $table->string('picture')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('charity_type');
             $table->string('financial_license');
             $table->string('financial_license_image');
-            // financial_license_image
             $table->string('ad_number');
             $table->timestamps();
         });
@@ -34,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('chairty__requests');
+        Schema::dropIfExists('charity__infos');
     }
 };

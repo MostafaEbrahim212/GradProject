@@ -27,22 +27,22 @@ class UserResource extends JsonResource
             ],
             'has_recommendation' => $this->has_recommendation,
             'request_status' => $this->request_status,
-            'is_chairty' => $this->is_chairty,
+            'is_charity' => $this->is_charity,
             'permessions' => [
                 'can_create' => $this->chairites_permessions->can_create ?? null,
                 'can_read' => $this->chairites_permessions->can_read ?? null,
                 'can_update' => $this->chairites_permessions->can_update ?? null,
                 'can_delete' => $this->chairites_permessions->can_delete ?? null,
             ],
-            'chairty_info' => [
-                'name' => $this->chairty_info->name ?? null,
-                'address' => $this->chairty_info->address ?? null,
-                'picture' => $this->chairty_info->picture ?? null,
-                'description' => $this->chairty_info->description ?? null,
-                'chairty_type' => $this->chairty_info->chairty_type ?? null,
-                'financial_license' => $this->chairty_info->financial_license ?? null,
-                'financial_license_image' => $this->chairty_info->financial_license_image ?? null,
-                'ad_number' => $this->chairty_info->ad_number ?? null,
+            'charity_info' => [
+                'name' => $this->charity_info->name ?? null,
+                'address' => $this->charity_info->address ?? null,
+                'picture' => $this->charity_info->picture ?? null,
+                'description' => $this->charity_info->description ?? null,
+                'charity_type' => $this->charity_info->charity_type ?? null,
+                'financial_license' => $this->charity_info->financial_license ?? null,
+                'financial_license_image' => $this->charity_info->financial_license_image ?? null,
+                'ad_number' => $this->charity_info->ad_number ?? null,
 
             ]
         ];

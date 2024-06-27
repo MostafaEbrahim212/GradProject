@@ -5,9 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FundraiserCategoryRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Resources\ChairtyResource;
+use App\Http\Resources\CharityResource;
 use App\Models\Admin;
-use App\Models\Chairty_Request;
+use App\Models\Charity_Request;
 use App\Models\Fundraisers;
 use App\Models\FundraisersCategories;
 use App\Models\Transaction;
@@ -69,7 +69,7 @@ class AdminController extends Controller
     }
     public function requests(Request $request)
     {
-        $requests = Chairty_Request::with('user')->get();
+        $requests = Charity_Request::with('user')->get();
         if (!$requests) {
             return res_data([], 'No requests found', 404);
         }
@@ -77,8 +77,12 @@ class AdminController extends Controller
     }
     public function accept_request(Request $request, $id)
     {
-        $user = User::find($id);
-        $user->is_chairty = true;
+        $request = Charity_Request::find($id);
+        if (!$request) {
+            return res_data([], 'Request not found', 404);
+        }
+        $user = User::find($request->user_id);
+        $user->is_charity = true;
         $user->request_status = 'accepted';
         $user->chairites_permessions()->create([
             'user_id' => $user->id,
@@ -89,45 +93,45 @@ class AdminController extends Controller
         ]);
         $user->save();
         // delete the request
-        $user->chairty_info()->create([
-            'name' => $user->chairty_request->chairty_name,
-            'address' => $user->chairty_request->chairty_address,
-            'chairty_type' => $user->chairty_request->chairty_type,
-            'financial_license' => $user->chairty_request->financial_license,
-            'financial_license_image' => $user->chairty_request->financial_license_image,
-            'ad_number' => $user->chairty_request->ad_number,
+        $user->charity_info()->create([
+            'name' => $user->charity_request->charity_name,
+            'address' => $user->charity_request->charity_address,
+            'charity_type' => $user->charity_request->charity_type,
+            'financial_license' => $user->charity_request->financial_license,
+            'financial_license_image' => $user->charity_request->financial_license_image,
+            'ad_number' => $user->charity_request->ad_number,
         ]);
-        Chairty_Request::where('user_id', $id)->delete();
+        Charity_Request::where('user_id', $id)->delete();
         return res_data($user, 'User accepted as charity', 200);
     }
     public function reject_request(Request $request, $id)
     {
         $user = User::find($id);
-        $user->is_chairty = false;
+        $user->is_charity = false;
         $user->request_status = 'rejected';
         $user->save();
         // delete the request
-        Chairty_Request::where('user_id', $id)->delete();
+        Charity_Request::where('user_id', $id)->delete();
         return res_data($user, 'User rejected as charity', 200);
     }
-    public function chairites(Request $request)
+    public function charities(Request $request)
     {
-        $users = User::where('is_chairty', true)->withOnly('chairty_info')->get();
-        $chairties_infos = $users->map(function ($user) {
-            return $user->chairty_info;
+        $users = User::where('is_charity', true)->withOnly('charity_info')->get();
+        $charities_infos = $users->map(function ($user) {
+            return $user->charity_info;
         });
-        if (!$chairties_infos) {
-            return res_data([], 'No chairties found', 404);
+        if (!$charities_infos) {
+            return res_data([], 'No charities found', 404);
         }
-        return res_data(ChairtyResource::collection($chairties_infos), 'Charities list', 200);
+        return res_data(CharityResource::collection($charities_infos), 'Charities list', 200);
     }
-    public function chairty(Request $request, $id)
+    public function charity(Request $request, $id)
     {
-        $chairty = User::where('is_chairty', true)->withOnly('chairty_info')->find($id);
-        if (!$chairty) {
+        $charity = User::where('is_charity', true)->withOnly('charity_info')->find($id);
+        if (!$charity) {
             return res_data([], 'Charity not found', 404);
         }
-        return res_data(new ChairtyResource($chairty->chairty_info), 'Charity info', 200);
+        return res_data(new CharityResource($charity->charity_info), 'Charity info', 200);
     }
     public function add_fundraiser_category(FundraiserCategoryRequest $request)
     {

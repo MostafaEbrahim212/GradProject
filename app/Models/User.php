@@ -21,10 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'request_be_chairty',
+        'request_be_charity',
         'request_status',
         'is_active',
-        'is_chairty',
+        'is_charity',
         'has_recommendation',
     ];
 
@@ -51,17 +51,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
-    public function chairty_request()
+    public function charity_request()
     {
-        return $this->hasOne(Chairty_Request::class);
+        return $this->hasOne(Charity_Request::class);
     }
     public function chairites_permessions()
     {
         return $this->hasOne(chairites_permessions::class);
     }
-    public function chairty_info()
+    public function charity_info()
     {
-        return $this->hasOne(Chairty_Info::class);
+        return $this->hasOne(Charity_Info::class, 'user_id', 'id');
     }
     public function recomendation()
     {

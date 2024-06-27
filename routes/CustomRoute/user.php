@@ -12,18 +12,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('img/{image}', [AuthController::class, 'getImage'])->name('image.get');
     Route::get('token', [AuthController::class, 'refreshAccessToken'])->name('token.refresh');
     Route::post('request-charity', [AuthController::class, 'request_charity'])->name('user.requestCharity');
+    Route::get('checkRecommendation', [AuthController::class, 'checkRecommendation'])->name('user.checkRecommendation');
     Route::post('recommendation', [AuthController::class, 'recommendation'])->name('user.recommendation');
     Route::post('donate', [donateController::class, 'stripePost'])->name('donate');
     Route::get('transactions', [donateController::class, 'transactions'])->name('transactions');
-
-
     Route::get('charities', [AuthController::class, 'charities'])->name('charities');
+    Route::post('search-charities', [AuthController::class, 'searchCharity'])->name('searchCharity');
     Route::get('charities/{id}', [AuthController::class, 'charity'])->name('charity');
-});
 
+});
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
-
 Route::fallback(function () {
     return res_data('Nothing Found!!', 'Invalid Request', 404);
 });

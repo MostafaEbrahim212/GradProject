@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\chairty;
+namespace App\Http\Controllers\charity;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChairtyProfileRequest;
-use App\Http\Resources\ChairtyResource;
+use App\Http\Requests\CharityProfileRequest;
+use App\Http\Resources\CharityResource;
 use App\Models\Fundraisers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ChairtyController extends Controller
+class CharityController extends Controller
 {
     public function __construct()
     {
@@ -18,15 +18,15 @@ class ChairtyController extends Controller
     }
     public function Profile(Request $request)
     {
-        $chairty = Auth::user()->chairty_info;
-        return res_data(new ChairtyResource($chairty), 'Chairty info', 200);
+        $charity = Auth::user()->charity_info;
+        return res_data(new CharityResource($charity), 'Charity info', 200);
     }
-    public function updateProfile(ChairtyProfileRequest $request)
+    public function updateProfile(CharityProfileRequest $request)
     {
-        $chairty = Auth::user()->chairty_info;
+        $charity = Auth::user()->charity_info;
         $validated = $request->validated();
-        Auth::user()->chairty_info->update($validated);
-        return res_data(new ChairtyResource($chairty), 'Chairty info updated', 200);
+        Auth::user()->charity_info->update($validated);
+        return res_data(new CharityResource($charity), 'charity info updated', 200);
     }
     public function add_fundraiser(Request $request)
     {
@@ -86,7 +86,7 @@ class ChairtyController extends Controller
     public function transactions(Request $request)
     {
         $user = Auth::user();
-        if ($user->is_chairty != 1) {
+        if ($user->is_charity != 1) {
             return res_data('error', 'You are not allowed to access this resource', 403);
         }
         $fundraiserIds = Fundraisers::where('user_id', $user->id)->pluck('id');

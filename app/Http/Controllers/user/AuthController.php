@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Chairty_Request;
+use App\Http\Requests\Charity_Request;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\userRequests\UpdatePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\userRequests\UserProfileRequest;
-use App\Http\Resources\ChairtyResource;
+use App\Http\Resources\CharityResource;
 use App\Http\Resources\UserResource;
 use App\Traits\imgTrait;
 use Illuminate\Http\Request;
@@ -109,18 +109,27 @@ class AuthController extends Controller
             'token' => $token
         ], 'refresh Token Successfuly');
     }
-    public function request_charity(Chairty_Request $request)
+    public function request_charity(Charity_Request $request)
     {
         $user = Auth::user();
         $validated = $request->validated();
-        if ($user->request_be_chairty == 1) {
+        if ($user->request_be_charity == 1) {
             return res_data([], 'You already sent a request', 400);
         }
-        $user->chairty_request()->createOrFirst($validated);
-        $user->request_be_chairty = 1;
+        $user->charity_request()->createOrFirst($validated);
+        $user->request_be_charity = 1;
         $user->request_status = 'pending';
         $user->save();
         return res_data([$validated], 'Request sent successfully', 200);
+    }
+    public function checkRecommendation()
+    {
+        $user = Auth::user();
+        if ($user->has_recommendation == 1) {
+            return res_data([], 'You already sent a recommendation', 200);
+        } else {
+            return res_data([], 'You did not send a recommendation', 400);
+        }
     }
     public function recommendation(Request $request)
     {
@@ -143,29 +152,67 @@ class AuthController extends Controller
     }
     public function charities()
     {
-        $user = Auth::user();
-        $charities = User::where('is_chairty', 1)
-            ->with(['chairty_info', 'fundraisers'])
-            ->get();
-        $charities_infos = $charities->map(function ($charity) {
-            return [
-                'charity_info' => new ChairtyResource($charity->chairty_info),
-                'fundraisers' => $charity->fundraisers,
-            ];
-        });
-        return res_data($charities_infos, 'All charities', 200);
+        try {
+            $user = Auth::user();
+            $charities = User::where('is_charity', 1)
+                ->with(['charity_info', 'fundraisers'])
+                ->get();
+            if ($charities->isEmpty()) {
+                return res_data([], 'No charities found', 404);
+            }
+            $charities_infos = $charities->map(function ($charity) {
+                return [
+                    'charity_info' => $charity->charity_info ? new CharityResource($charity->charity_info) : null,
+                    'fundraisers' => $charity->fundraisers,
+                ];
+            });
+            return res_data($charities_infos, 'All charities', 200);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching charities: ' . $e->getMessage());
+            return res_data([], 'Server error', 500);
+        }
+    }
+
+
+
+
+    public function searchCharity(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $validated = $request->validate([
+                'search' => 'required|string'
+            ]);
+            $searchTerm = strtolower($validated['search']);
+
+            $charities = User::where('is_charity', 1)
+                ->leftJoin('charity__infos', 'users.id', '=', 'charity__infos.user_id')
+                ->whereRaw('LOWER(charity__infos.name) like ?', ['%' . $searchTerm . '%'])
+                ->with(['charity_info', 'fundraisers'])
+                ->select('users.*')
+                ->paginate(10);
+            $charities->getCollection()->transform(function ($charity) {
+                return [
+                    'charity_info' => new CharityResource($charity->charity_info),
+                    'fundraisers' => $charity->fundraisers,
+                ];
+            });
+            return res_data($charities, 'All charities', 200);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching charities: ' . $e->getMessage());
+            return res_data([$e->getMessage()], 'Server error', 500);
+        }
     }
 
     public function charity($id)
     {
-        $chairty = User::where('is_chairty', 1)->with('chairty_info', 'fundraisers')->find($id);
-        if (!$chairty) {
-            return res_data([], 'Chairty not found', 404);
+        $charity = User::where('is_charity', 1)->with('charity_info', 'fundraisers')->find($id);
+        if (!$charity) {
+            return res_data([], 'charity not found', 404);
         }
         return res_data([
-            new ChairtyResource($chairty->chairty_info),
-            'fundraisers' => $chairty->fundraisers
-        ], 'Chairty info', 200);
+            new CharityResource($charity->charity_info),
+        ], 'charity info', 200);
     }
 }
 

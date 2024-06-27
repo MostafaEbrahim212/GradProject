@@ -18,7 +18,7 @@ class donateController extends Controller
     }
     private function isUserAllowedToDonate($user)
     {
-        if ($user->is_chairty == 1) {
+        if ($user->is_charity == 1) {
             return res_data('error', 'You are not allowed to donate');
         }
         return null;

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChairtyResource extends JsonResource
+class CharityResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,13 +21,13 @@ class ChairtyResource extends JsonResource
             'name' => $this->name,
             'picture' => $this->picture,
             'address' => $this->address,
-            'chairty_type' => $this->chairty_type,
+            'charity_type' => $this->charity_type,
             'description' => $this->description,
             'financial_license' => $this->financial_license,
-            'financial_license_image' => $this->financial_license_image,
+            'financial_license_image' => $this->financial_license_image ?? '',
             'ad_number' => $this->ad_number,
             'is_active' => $this->is_active,
-            'fundraisers' => $this->fundraisers,
+            'fundraisers' => $this->fundraisers ?? [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

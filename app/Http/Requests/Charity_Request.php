@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Chairty_Request extends FormRequest
+class Charity_Request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,9 @@ class Chairty_Request extends FormRequest
             'phone' => 'required|string',
             'address' => 'required|string',
             'job' => 'required|string',
-            'chairty_name' => 'required|string',
-            'chairty_address' => 'required|string',
-            'chairty_type' => 'required|string|in:medical,educational,social,environmental,humanitarian,cultural,sports,economic,other',
+            'charity_name' => 'required|string',
+            'charity_address' => 'required|string',
+            'charity_type' => 'required|string|in:medical,educational,social,environmental,humanitarian,cultural,sports,economic,other',
             'financial_license' => 'required|string',
             'financial_license_image' => 'required|string',
             'ad_number' => 'required|string',
